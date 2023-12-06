@@ -1,13 +1,13 @@
 data "aws_ami" "latest_ubuntu" {
-  owners           = ["099720109477"]
+  owners = ["099720109477"]
   most_recent = true
-
+ 
   filter {
-    name   = "name"
+    name = "name"
     values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
 }
-
+ 
 resource "aws_instance" "panda" {
   depends_on = [null_resource.download_ssh_key]
   count                  = length(var.availability_zones)
@@ -18,7 +18,7 @@ resource "aws_instance" "panda" {
   vpc_security_group_ids = [aws_security_group.sg_pub.id]
   subnet_id = aws_default_subnet.default_az[count.index].id
 }
-
+ 
 resource "aws_security_group" "sg_pub" {
   ingress {
     from_port   = 5000
@@ -26,14 +26,14 @@ resource "aws_security_group" "sg_pub" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
+ 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
+ 
   egress {
     from_port   = 0
     to_port     = 65535
@@ -41,13 +41,13 @@ resource "aws_security_group" "sg_pub" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
+ 
 # output
-
+ 
 output "alb_dns_name" {
-  value = aws_lb.alb.dns_name
+    value = aws_lb.alb.dns_name
 }
-
+ 
 output "ami_id" {
-  value = data.aws_ami.latest_ubuntu.image_id
+    value = data.aws_ami.latest_ubuntu.image_id
 }
